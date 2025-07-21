@@ -1,5 +1,5 @@
 "use client";
-import { useForm } from "react-hook-form";
+import { useForm,UseFormRegister } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -15,6 +15,38 @@ const formSchema = z.object({
 });
 
 type FormData = z.infer<typeof formSchema>;
+
+function InputField({
+  register,
+  name,
+  placeholder,
+  type = "text",
+  error,
+}: {
+  register: UseFormRegister<FormData>;
+  name: keyof FormData;
+  placeholder: string;
+  type?: string;
+  error?: string;
+}) {
+  return (
+    <div>
+      <input
+        {...register(name)}
+        placeholder={placeholder}
+        type={type}
+        className="w-full border p-2 rounded"
+      />
+      {error && <p className="text-red-500 text-sm">{error}</p>}
+    </div>
+  );
+}
+
+function Textfield({ savedData, label, name }: { savedData: FormData; label: string; name: keyof FormData }) {
+  return (
+    <p><strong>{label}:</strong> {savedData[name] ?? "N/A"}</p>
+  );
+}
 
 export default function ProfilePage() {
   const [editMode, setEditMode] = useState(false);
@@ -57,51 +89,40 @@ export default function ProfilePage() {
 
       {editMode ? (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <input
-              {...register("name")}
-              placeholder="Name"
-              className="w-full border p-2 rounded"
-            />
-            {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
-          </div>
-
-          <div>
-            <input
-              {...register("email")}
-              placeholder="Email"
-              className="w-full border p-2 rounded"
-            />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
-          </div>
-
-          <div>
-            <input
-              {...register("phoneNumber")}
-              placeholder="Phone Number (optional)"
-              className="w-full border p-2 rounded"
-            />
-          </div>
-
-          <div>
-            <input
-              {...register("webUrl")}
-              placeholder="Website URL"
-              className="w-full border p-2 rounded"
-            />
-            {errors.webUrl && <p className="text-red-500 text-sm">{errors.webUrl.message}</p>}
-          </div>
-
-          <div>
-            <input
-              type="number"
-              {...register("experience")}
-              placeholder="Years of Experience"
-              className="w-full border p-2 rounded"
-            />
-            {errors.experience && <p className="text-red-500 text-sm">{errors.experience.message}</p>}
-          </div>
-
+         <InputField
+            register={register}
+            name="name"
+            placeholder="Name"
+            error={errors.name?.message}
+          />
+          <InputField
+            register={register}
+            name="email"
+            placeholder="Email"
+            type="email"
+            error={errors.email?.message}
+          />
+           <InputField
+           register={register}
+            name="phoneNumber"
+            placeholder="Phone Number (optional)"
+            type="tel"
+            error={errors.phoneNumber?.message}
+          />
+         <InputField
+            register={register}
+            name="webUrl"
+            placeholder="Website URL"
+            type="url"
+            error={errors.webUrl?.message}
+          />
+          <InputField
+            register={register}
+            name="experience"
+            placeholder="Years of Experience"
+            type="number"
+            error={errors.experience?.message}
+          />
           <button
             type="submit"
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
@@ -111,11 +132,11 @@ export default function ProfilePage() {
         </form>
       ) : savedData ? (
         <div className="space-y-2">
-          <p><strong>Name:</strong> {savedData.name}</p>
-          <p><strong>Email:</strong> {savedData.email}</p>
-          <p><strong>Phone Number:</strong> {savedData.phoneNumber || "N/A"}</p>
-          <p><strong>Website:</strong> {savedData.webUrl}</p>
-          <p><strong>Experience:</strong> {savedData.experience} years</p>
+          <Textfield savedData={savedData} label="Name" name="name" />
+          <Textfield savedData={savedData} label="Email" name="email"/>
+          <Textfield savedData={savedData} label="Phone Number" name="phoneNumber" />
+          <Textfield savedData={savedData} label="Website URL" name="webUrl" />
+          <Textfield savedData={savedData} label="Experience" name="experience"/>
         </div>
       ) : (
         <p className="text-gray-500">No profile data available. Please edit your profile.</p>
