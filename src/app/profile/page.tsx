@@ -1,76 +1,20 @@
 "use client";
-import { useForm, UseFormRegister } from "react-hook-form";
-import * as z from "zod";
+
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-
-
-const formSchema = z.object({
-  name: z.string().min(4, "Name is required"),
-  email: z.string().email("Invalid email address"),
-  phoneNumber: z.string().optional(),
-  webUrl: z.string().url("Invalid URL"),
-  experience: z.coerce.number()
-    .min(0, "Experience must be a positive number")
-    .max(50, "Experience cannot exceed 50 years"),
-});
-
-type FormData = z.infer<typeof formSchema>;
-
-type InputFieldProps = {
-  name: string;
-  placeholder: string;
-  type?: string;
-  error?: string;
-  register?: UseFormRegister<FormData>;
-  value?: string | number;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
-
-function InputField({
-  name,
-  placeholder,
-  type = "text",
-  error,
-  register,
-  value,
-  onChange,
-}: InputFieldProps) {
-  return (
-    <div>
-      <input
-        placeholder={placeholder}
-        type={type}
-        className="w-full border p-2 rounded"
-        {...(register ? register(name as keyof FormData) : { name, value, onChange })}
-      />
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-    </div>
-  );
-}
-
-type TextfieldProps = {
-  savedData: FormData;
-  label: string;
-  name: keyof FormData;
-};
-function Textfield({ savedData, label, name }: TextfieldProps) {
-  return (
-    <p>
-      <strong>{label}:</strong> {savedData[name] ?? "N/A"}
-    </p>
-  );
-}
-
+import InputField from "../input/inputfield";
+import Textfield from "../text/textfield";
+import { formSchema, FormData } from "../types/form";
 
 export default function ProfilePage() {
   const [editMode, setEditMode] = useState(false);
   const [savedData, setSavedData] = useState<FormData | null>(null);
-  const [bio, setBio] = useState("");
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
     reset,
   } = useForm<FormData>({
@@ -105,39 +49,55 @@ export default function ProfilePage() {
       {editMode ? (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <InputField
-            register={register}
             name="name"
             placeholder="Name"
+            type="text"
             error={errors.name?.message}
+            value={watch("name")}
+            onChange={register("name").onChange}
+            inputRef={register("name").ref}
           />
+
           <InputField
-            register={register}
             name="email"
             placeholder="Email"
             type="email"
             error={errors.email?.message}
+            value={watch("email")}
+            onChange={register("email").onChange}
+            inputRef={register("email").ref}
           />
+
           <InputField
-            register={register}
             name="phoneNumber"
-            placeholder="Phone Number (optional)"
+            placeholder="Phone Number"
             type="tel"
             error={errors.phoneNumber?.message}
+            value={watch("phoneNumber")}
+            onChange={register("phoneNumber").onChange}
+            inputRef={register("phoneNumber").ref}
           />
+
           <InputField
-            register={register}
             name="webUrl"
-            placeholder="Website URL"
+            placeholder="Website URL (optional)"
             type="url"
             error={errors.webUrl?.message}
+            value={watch("webUrl")}
+            onChange={register("webUrl").onChange}
+            inputRef={register("webUrl").ref}
           />
+
           <InputField
-            register={register}
             name="experience"
             placeholder="Years of Experience"
             type="number"
             error={errors.experience?.message}
+            value={watch("experience")}
+            onChange={register("experience", { valueAsNumber: true }).onChange}
+            inputRef={register("experience", { valueAsNumber: true }).ref}
           />
+
           <button
             type="submit"
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
@@ -147,17 +107,11 @@ export default function ProfilePage() {
         </form>
       ) : savedData ? (
         <div className="space-y-2">
-          <Textfield savedData={savedData} label="Name" name="name" />
-          <Textfield savedData={savedData} label="Email" name="email" />
-          <Textfield savedData={savedData} label="Phone Number" name="phoneNumber" />
-          <Textfield savedData={savedData} label="Website URL" name="webUrl" />
-          <Textfield savedData={savedData} label="Experience" name="experience" />
-          <InputField                    //to verify its use without react-hook-form
-            name="bio"
-            placeholder="Bio"
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}  
-          />
+          <Textfield label="Name" value={savedData?.name} />
+          <Textfield label="Email" value={savedData?.email} />
+          <Textfield label="Phone Number" value={savedData?.phoneNumber} />
+          <Textfield label="Website URL" value={savedData?.webUrl} />
+          <Textfield label="Experience" value={savedData?.experience} />
         </div>
       ) : (
         <p className="text-gray-500">
