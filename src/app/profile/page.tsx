@@ -1,9 +1,10 @@
 "use client";
-import { useForm,UseFormRegister } from "react-hook-form";
+import { useForm, UseFormRegister } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 
+// ✅ Schema
 const formSchema = z.object({
   name: z.string().min(4, "Name is required"),
   email: z.string().email("Invalid email address"),
@@ -16,41 +17,57 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
+type InputFieldProps = {
+  name: string;
+  placeholder: string;
+  type?: string;
+  error?: string;
+  register?: UseFormRegister<FormData>;
+  value?: string | number;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
 function InputField({
-  register,
   name,
   placeholder,
   type = "text",
   error,
-}: {
-  register: UseFormRegister<FormData>;
-  name: keyof FormData;
-  placeholder: string;
-  type?: string;
-  error?: string;
-}) {
+  register,
+  value,
+  onChange,
+}: InputFieldProps) {
   return (
     <div>
       <input
-        {...register(name)}
         placeholder={placeholder}
         type={type}
         className="w-full border p-2 rounded"
+        {...(register ? register(name as keyof FormData) : { name, value, onChange })}
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>
   );
 }
 
-function Textfield({ savedData, label, name }: { savedData: FormData; label: string; name: keyof FormData }) {
+// ✅ Textfield for view mode
+type TextfieldProps = {
+  savedData: FormData;
+  label: string;
+  name: keyof FormData;
+};
+function Textfield({ savedData, label, name }: TextfieldProps) {
   return (
-    <p><strong>{label}:</strong> {savedData[name] ?? "N/A"}</p>
+    <p>
+      <strong>{label}:</strong> {savedData[name] ?? "N/A"}
+    </p>
   );
 }
+
 
 export default function ProfilePage() {
   const [editMode, setEditMode] = useState(false);
   const [savedData, setSavedData] = useState<FormData | null>(null);
+  const [bio, setBio] = useState("");
 
   const {
     register,
@@ -70,9 +87,8 @@ export default function ProfilePage() {
 
   const onSubmit = (data: FormData) => {
     setSavedData(data);
-    console.log("data saved:", data);
     setEditMode(false);
-    reset(data); 
+    reset(data);
   };
 
   return (
@@ -89,7 +105,7 @@ export default function ProfilePage() {
 
       {editMode ? (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-         <InputField
+          <InputField
             register={register}
             name="name"
             placeholder="Name"
@@ -102,14 +118,14 @@ export default function ProfilePage() {
             type="email"
             error={errors.email?.message}
           />
-           <InputField
-           register={register}
+          <InputField
+            register={register}
             name="phoneNumber"
             placeholder="Phone Number (optional)"
             type="tel"
             error={errors.phoneNumber?.message}
           />
-         <InputField
+          <InputField
             register={register}
             name="webUrl"
             placeholder="Website URL"
@@ -133,13 +149,21 @@ export default function ProfilePage() {
       ) : savedData ? (
         <div className="space-y-2">
           <Textfield savedData={savedData} label="Name" name="name" />
-          <Textfield savedData={savedData} label="Email" name="email"/>
+          <Textfield savedData={savedData} label="Email" name="email" />
           <Textfield savedData={savedData} label="Phone Number" name="phoneNumber" />
           <Textfield savedData={savedData} label="Website URL" name="webUrl" />
-          <Textfield savedData={savedData} label="Experience" name="experience"/>
+          <Textfield savedData={savedData} label="Experience" name="experience" />
+          <InputField                    //to verify its use without react-hook-form
+            name="bio"
+            placeholder="Bio"
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}  
+          />
         </div>
       ) : (
-        <p className="text-gray-500">No profile data available. Please edit your profile.</p>
+        <p className="text-gray-500">
+          No profile data available. Please edit your profile.
+        </p>
       )}
     </div>
   );
