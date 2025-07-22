@@ -4,7 +4,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 
-// ✅ Schema
+
 const formSchema = z.object({
   name: z.string().min(4, "Name is required"),
   email: z.string().email("Invalid email address"),
@@ -49,7 +49,6 @@ function InputField({
   );
 }
 
-// ✅ Textfield for view mode
 type TextfieldProps = {
   savedData: FormData;
   label: string;
