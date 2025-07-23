@@ -1,10 +1,10 @@
-import InputField from "./inputfield";
+import InputField from "./InputField";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { formSchema, FormData } from "../types/form"
 
 type ProfileFormProps = {
-  saveddata: FormData;
+  saveddata: FormData | null;
   onSubmit: (data: FormData) => void;
 };
 
@@ -16,10 +16,16 @@ export default function ProfileForm( { saveddata, onSubmit }: ProfileFormProps) 
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
-    defaultValues:saveddata,
+    defaultValues:saveddata || {
+      name: "",
+      email: "",
+      phoneNumber: "",
+      webUrl: "",
+      experience: 0,
+    },
   });
 
-   
+  
   return(
   <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <InputField
@@ -44,7 +50,7 @@ export default function ProfileForm( { saveddata, onSubmit }: ProfileFormProps) 
           />
 
           <InputField
-            placeholder="Website URL (optional)"
+            placeholder="Website URL"
             type="url"
             error={errors.webUrl?.message}
             {...register("webUrl")}

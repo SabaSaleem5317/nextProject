@@ -1,4 +1,4 @@
-import Textfield from "./textfield";
+import Textfield from "./TextField";
 import { FormData } from "../types/form";
 
 export default function ProfileDisplay({ data }: { data: FormData }) {
