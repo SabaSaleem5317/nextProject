@@ -1,14 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import ProfileDisplay from "../profileDisplay/page";
-import ProfileForm from "../profileForm/page";
+import ProfileDisplay from "../Components/profiledisplay";
+import ProfileForm from "../Components/profileform";
 import {FormData } from "../types/form";
 
 export default function ProfilePage() {
   const [editMode, setEditMode] = useState(false);
-  const [savedData, setSavedData] = useState<FormData | null>(null);
-
+  const [savedData, setSavedData] = useState<FormData>({
+  name: "Saba",
+  email: "sabasaleem509@gmail.com",
+  phoneNumber: "",
+  webUrl: "",
+  experience: 0,
+});
   const onSubmit = (data: FormData) => {
     setSavedData(data);
     setEditMode(false);
@@ -27,7 +32,7 @@ export default function ProfilePage() {
       </div>
 
       {editMode ? (
-        <ProfileForm onSubmit={onSubmit}/>
+        <ProfileForm  saveddata={savedData} onSubmit={onSubmit}/>
       ) : savedData ? ( 
         <ProfileDisplay data={savedData} />
       ) : (
