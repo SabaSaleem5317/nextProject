@@ -31,28 +31,28 @@ export default function ProfileForm( { saveddata, onSubmit }: ProfileFormProps) 
           <InputField
             placeholder="Name"
             type="text"
-            error={errors.name?.message}
+            errorMessage={errors.name?.message}
             {...register("name")}
           />
 
           <InputField
             placeholder="Email"
             type="email"
-            error={errors.email?.message}
+            errorMessage={errors.email?.message}
             {...register("email")}
           />
 
           <InputField
             placeholder="Phone Number"
             type="tel"
-            error={errors.phoneNumber?.message}
+            errorMessage={errors.phoneNumber?.message}
             {...register("phoneNumber")}
           />
 
           <InputField
             placeholder="Website URL"
             type="url"
-            error={errors.webUrl?.message}
+            errorMessage={errors.webUrl?.message}
             {...register("webUrl")}
            
           />
@@ -60,7 +60,7 @@ export default function ProfileForm( { saveddata, onSubmit }: ProfileFormProps) 
           <InputField
             placeholder="Years of Experience"
             type="number"
-            error={errors.experience?.message}
+            errorMessage={errors.experience?.message}
             {...register("experience", { valueAsNumber: true })}
           />
           <button

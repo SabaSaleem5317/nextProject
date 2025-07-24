@@ -1,20 +1,22 @@
 import React from "react";
+import TextField, { TextFieldProps } from "@mui/material/TextField";
 
-type InputFieldProps = {
-  error?: string;
-} & React.InputHTMLAttributes<HTMLInputElement>;
+type InputFieldProps = TextFieldProps & {
+  errorMessage?: string;
+};
 
 const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
-  ({ error,...props}, ref) => {
+  ({ errorMessage, ...props }, ref) => {
     return (
-      <div>
-        <input
-          {...props}
-          className="w-full border p-2 rounded"
-          ref={ref}
-        />
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-      </div>
+      <TextField
+        variant="outlined"
+        className="mt-4"
+        fullWidth
+        error={!!errorMessage}
+        helperText={errorMessage}
+        inputRef={ref} 
+        {...props}
+      />
     );
   }
 );
@@ -22,6 +24,3 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
 InputField.displayName = "InputField";
 
 export default InputField;
-
-
-
