@@ -13,10 +13,9 @@ export default function ProfileForm( { saveddata, onSubmit }: ProfileFormProps) 
  const {
     control,
     handleSubmit,
-    trigger,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    mode: "onBlur",
+    mode: "onTouched",
     defaultValues:saveddata || {
       name: "",
       email: "",
@@ -25,7 +24,7 @@ export default function ProfileForm( { saveddata, onSubmit }: ProfileFormProps) 
       experience: 0,
     },
   });
-
+ 
  console.log('profile form');
 
  const inputValidation= (
@@ -40,12 +39,6 @@ export default function ProfileForm( { saveddata, onSubmit }: ProfileFormProps) 
         {...field}
         {...props}
         errorMessage={fieldState.error?.message}
-        onChange={async (e) => {
-          field.onChange(e);
-          if (fieldState.isTouched) {
-            await trigger(fieldName); 
-          }
-        }}
       />
     ),
   };
