@@ -19,8 +19,7 @@ const jobOptions = [
 
 export default function ProfileForm( { saveddata, onSubmit }: ProfileFormProps) {
  const {
-    control,
-    setFocus, 
+    control, 
     handleSubmit,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -49,7 +48,6 @@ export default function ProfileForm( { saveddata, onSubmit }: ProfileFormProps) 
         {...field}
         {...props}
         errorMessage={fieldState.error?.message}
-        onError={() => setFocus(fieldName)}
       />
     ),
   };
