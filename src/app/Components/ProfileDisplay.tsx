@@ -9,6 +9,7 @@ export default function ProfileDisplay({ data }: { data: FormData }) {
       <Textfield label="Phone Number" value={data.phoneNumber} />
       <Textfield label="Website URL" value={data.webUrl} />
       <Textfield label="Experience" value={data.experience} />
+      <Textfield label="Job Title" value={data.jobTitle} />
     </div>
   );
 }

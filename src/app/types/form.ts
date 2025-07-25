@@ -7,6 +7,7 @@ export const formSchema = z.object({
   experience: z.coerce.number()
     .min(0, "Experience must be a positive number")
     .max(50, "Experience cannot exceed 50 years"),
+  jobTitle: z.string(),
 });
 
 export type FormData = z.infer<typeof formSchema>;
