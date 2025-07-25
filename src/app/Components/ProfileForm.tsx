@@ -1,7 +1,8 @@
 import InputField from "./InputField";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm,Controller } from "react-hook-form";
 import { formSchema, FormData } from "../types/form"
+
 
 type ProfileFormProps = {
   saveddata: FormData | null;
@@ -10,12 +11,12 @@ type ProfileFormProps = {
 
 export default function ProfileForm( { saveddata, onSubmit }: ProfileFormProps) {
  const {
-    register,
+    control,
     handleSubmit,
-    formState: { errors },
+    trigger,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    mode: "onChange",
+    mode: "onBlur",
     defaultValues:saveddata || {
       name: "",
       email: "",
@@ -25,50 +26,55 @@ export default function ProfileForm( { saveddata, onSubmit }: ProfileFormProps) 
     },
   });
 
+ console.log('profile form');
+
+ const inputValidation= (
+  fieldName: keyof FormData,
+  props: { placeholder?: string; type?: string } = {}
+) => {
+  return {
+    name: fieldName,
+    control,
+    render: ({ field, fieldState }:any) => (
+      <InputField
+        {...field}
+        {...props}
+        errorMessage={fieldState.error?.message}
+        onChange={async (e) => {
+          field.onChange(e);
+          if (fieldState.isTouched) {
+            await trigger(fieldName); 
+          }
+        }}
+      />
+    ),
+  };
+};
   
   return(
   <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <InputField
-            placeholder="Name"
-            type="text"
-            errorMessage={errors.name?.message}
-            {...register("name")}
+          <Controller
+            {...inputValidation("name", { placeholder: "Name" })}
           />
-
-          <InputField
-            placeholder="Email"
-            type="email"
-            errorMessage={errors.email?.message}
-            {...register("email")}
-          />
-
-          <InputField
-            placeholder="Phone Number"
-            type="tel"
-            errorMessage={errors.phoneNumber?.message}
-            {...register("phoneNumber")}
-          />
-
-          <InputField
-            placeholder="Website URL"
-            type="url"
-            errorMessage={errors.webUrl?.message}
-            {...register("webUrl")}
-           
-          />
-
-          <InputField
-            placeholder="Years of Experience"
-            type="number"
-            errorMessage={errors.experience?.message}
-            {...register("experience", { valueAsNumber: true })}
-          />
+          <Controller
+            {...inputValidation("email", { placeholder: "Email", type: "email" })}
+          />  
+        
+          <Controller
+           {...inputValidation("phoneNumber", { placeholder: "Phone Number", type: "tel" })}
+          />  
+          <Controller
+            {...inputValidation("webUrl", { placeholder: "Website URL", type: "url" })}
+          />  
+         <Controller
+            {...inputValidation("experience", { placeholder: "Experience (years)", type: "number" })}
+         />
           <button
             type="submit"
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
           >
             Save
-          </button>
+          </button> 
         </form>
   )
 }
