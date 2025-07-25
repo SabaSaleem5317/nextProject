@@ -24,10 +24,9 @@ export default function ProfileForm( { saveddata, onSubmit }: ProfileFormProps) 
       experience: 0,
     },
   });
- 
- console.log('profile form');
 
- const inputValidation= (
+
+ const createInputFieldProps= (
   fieldName: keyof FormData,
   props: { placeholder?: string; type?: string } = {}
 ) => {
@@ -47,20 +46,20 @@ export default function ProfileForm( { saveddata, onSubmit }: ProfileFormProps) 
   return(
   <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Controller
-            {...inputValidation("name", { placeholder: "Name" })}
+            {...createInputFieldProps("name", { placeholder: "Name" })}
           />
           <Controller
-            {...inputValidation("email", { placeholder: "Email", type: "email" })}
+            {...createInputFieldProps("email", { placeholder: "Email", type: "email" })}
           />  
         
           <Controller
-           {...inputValidation("phoneNumber", { placeholder: "Phone Number", type: "tel" })}
+           {...createInputFieldProps("phoneNumber", { placeholder: "Phone Number", type: "tel" })}
           />  
           <Controller
-            {...inputValidation("webUrl", { placeholder: "Website URL", type: "url" })}
+            {...createInputFieldProps("webUrl", { placeholder: "Website URL", type: "url" })}
           />  
          <Controller
-            {...inputValidation("experience", { placeholder: "Experience (years)", type: "number" })}
+            {...createInputFieldProps("experience", { placeholder: "Experience (years)", type: "number" })}
          />
           <button
             type="submit"
