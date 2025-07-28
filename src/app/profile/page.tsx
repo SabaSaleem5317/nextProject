@@ -4,22 +4,22 @@ import { useEffect,useState } from "react";
 import ProfileDisplay from "../Components/ProfileDisplay";
 import ProfileForm from "../Components/ProfileForm";
 import {FormData } from "../types/form";
-
+import { saveToStorage, getFromStorage } from '../../utility/storage';
 export default function ProfilePage() {
 const [editMode, setEditMode] = useState(false);
 const [savedData, setSavedData] = useState<FormData | null>(null)
 
-  useEffect (() => {
-    const storedData = localStorage.getItem("profileData");
-    if (storedData) {
-      setSavedData(JSON.parse(storedData));
-    }
-    console.log("ProfilePage mounted, savedData");
-  }, []);
+
+useEffect(() => {
+const stored = getFromStorage("profileData");
+  if (stored) {
+    setSavedData(stored);
+  }
+}, []);
 
   const onSubmit = (data: FormData) => {
     setSavedData(data);
-    localStorage.setItem("profileData", JSON.stringify(data));
+    saveToStorage("profileData", data);
     setEditMode(false);
   };
 
