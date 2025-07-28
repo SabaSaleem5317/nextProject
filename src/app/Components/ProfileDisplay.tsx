@@ -1,14 +1,15 @@
-import Textfield from "./TextField";
+import TextDisplay from "./TextDisplay";
 import { FormData } from "../types/form";
 
 export default function ProfileDisplay({ data }: { data: FormData }) {
   return (
     <div className="space-y-2">
-      <Textfield label="Name" value={data.name} />
-      <Textfield label="Email" value={data.email} />
-      <Textfield label="Phone Number" value={data.phoneNumber} />
-      <Textfield label="Website URL" value={data.webUrl} />
-      <Textfield label="Experience" value={data.experience} />
+      <TextDisplay label="Name" value={data.name} />
+      <TextDisplay label="Email" value={data.email} />
+      <TextDisplay label="Phone Number" value={data.phoneNumber} />
+      <TextDisplay label="Website URL" value={data.webUrl} />
+      <TextDisplay label="Experience" value={data.experience} />
+      <TextDisplay label="Job Title" value={data.jobTitle} />
     </div>
   );
 }
