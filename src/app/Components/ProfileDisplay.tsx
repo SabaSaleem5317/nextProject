@@ -10,6 +10,8 @@ export default function ProfileDisplay({ data }: { data: FormData }) {
       <TextDisplay label="Website URL" value={data.webUrl} />
       <TextDisplay label="Experience" value={data.experience} />
       <TextDisplay label="Job Title" value={data.jobTitle} />
+     <TextDisplay label="Date of Birth" value={data.dateofBirth}/>
+     <TextDisplay label="Gender" value={data.gender}/>
     </div>
   );
 }

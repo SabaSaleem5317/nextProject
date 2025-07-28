@@ -5,6 +5,7 @@ import { formSchema, FormData } from "../types/form";
 import { MenuItem } from "@mui/material";
 
 
+
 type ProfileFormProps = {
   saveddata: FormData | null;
   onSubmit: (data: FormData) => void;
@@ -71,6 +72,36 @@ export default function ProfileForm( { saveddata, onSubmit }: ProfileFormProps) 
          <Controller
             {...createInputFieldProps("experience", { placeholder: "Experience (years)", type: "number" })}
          />
+         <Controller 
+         {...createInputFieldProps("dateofBirth",{placeholder:"Date of Birth",type:"date"})}
+         />
+          <Controller
+        name="myRadioChoice"
+        control={control}
+        render={({ field }) => (
+          <>
+            <label>
+              <input
+                type="radio"
+                value="Female"
+                {...field} 
+                checked={field.value === "choice1"} 
+              />
+              Female
+            </label>
+            <label>
+              <input
+                type="radio"
+                value="Male"
+                {...field}
+                checked={field.value === "choice2"}
+              />
+              Male
+            </label>
+          </>
+        )}
+      />
+         
          <Controller
            {...createInputFieldProps("jobTitle", {
               label: "Job Title",

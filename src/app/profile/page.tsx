@@ -17,6 +17,7 @@ const stored = getFromStorage("profileData");
   }
 }, []);
 
+
   const onSubmit = (data: FormData) => {
     setSavedData(data);
     saveToStorage("profileData", data);
