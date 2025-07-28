@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect,useState } from "react";
 import ProfileDisplay from "../Components/ProfileDisplay";
 import ProfileForm from "../Components/ProfileForm";
 import {FormData } from "../types/form";
@@ -8,8 +8,18 @@ import {FormData } from "../types/form";
 export default function ProfilePage() {
 const [editMode, setEditMode] = useState(false);
 const [savedData, setSavedData] = useState<FormData | null>(null)
+
+  useEffect (() => {
+    const storedData = localStorage.getItem("profileData");
+    if (storedData) {
+      setSavedData(JSON.parse(storedData));
+    }
+    console.log("ProfilePage mounted, savedData");
+  }, []);
+
   const onSubmit = (data: FormData) => {
     setSavedData(data);
+    localStorage.setItem("profileData", JSON.stringify(data));
     setEditMode(false);
   };
 
