@@ -1,5 +1,5 @@
-import TextDisplay from "./TextDisplay";
-import { FormData } from "../types/form";
+import TextDisplay from './TextDisplay';
+import { FormData } from '../types/form';
 
 export default function ProfileDisplay({ data }: { data: FormData }) {
   return (
