@@ -1,33 +1,79 @@
 "use client";
 
 import { useEffect,useState } from "react";
-import ProfileDisplay from "../Components/ProfileDisplay";
-import ProfileForm from "../Components/ProfileForm";
-import {FormData } from "../types/form";
+import ProfileDisplay from "../Display/ProfileDisplay";
+import AddressDisplay from "../Display/AddressDisplay";
+import JobDisplay from "../Display/JobDisplay";
+import ProfileForm from "../Forms/ProfileForm";
+import AddressForm from "../Forms/AddressForm";
+import {personalData ,addressData, jobData} from "../types/form";
 import { saveToStorage, getFromStorage } from '../../utility/storage';
+import JobForm from "../Forms/JobForm";
+
 export default function ProfilePage() {
 const [editMode, setEditMode] = useState(false);
-const [savedData, setSavedData] = useState<FormData | null>(null)
+const [personalSavedData, setpersonalSavedData] = useState<personalData | null>(null);
+const [addressSavedData,setaddressSavedData]=useState<addressData | null>(null)
+const [jobSavedData,setjobSavedData]=useState<jobData | null>(null)
+const tabs=["Personal Details","Address Details","Job Details"];
+const [activeTab,setactiveTab]=useState(0);
+
 
 
 useEffect(() => {
-const stored = getFromStorage("profileData");
-  if (stored) {
-    setSavedData(stored);
+const personalDatastored = getFromStorage("profileData");
+const addressStored = getFromStorage("addressData");
+const jobStored = getFromStorage("jobData");
+if (personalDatastored) {
+    setpersonalSavedData(personalDatastored);
+  }
+if (addressStored) {
+    setaddressSavedData(addressStored);
+  }
+if (jobStored) {
+    setjobSavedData(jobStored);
   }
 }, []);
 
-
-  const onSubmit = (data: FormData) => {
-    setSavedData(data);
+ 
+  const handlePersonalDataSubmit = (data: personalData) => {
+    setpersonalSavedData(data);
     saveToStorage("profileData", data);
     setEditMode(false);
   };
+    const handleAddressDataSubmit = (data: addressData) => {
+    setaddressSavedData(data);
+    saveToStorage("addressData", data);
+    setEditMode(false);
+  };
+   
+   const handleJobDataSubmit=(data:jobData)=>{
+    setjobSavedData(data);
+    saveToStorage("jobData", data);
+    setEditMode(false);
+   }
+
+  const handleTabClick=(i:number)=>{
+   setactiveTab(i);
+  }
 
   return (
+    <div>
+       <div className="flex mx-180 mt-5 items-center mb-6 ">
+       {tabs.map((tab, index) => ( 
+        <button
+          key={index} 
+          className="px-4 py-const [addressSavedData,setaddressSavedData]=useState<addressData | null>(null)2 bg-gray-300 text-black hover:bg-gray-500 border-1"
+          onClick={() => handleTabClick(index)}
+        >
+          {tab}
+        </button>
+      ))}
+       </div>
+    
     <div className="p-6 my-10 mx-auto max-w-xl border-2 border-gray-300 rounded-lg shadow-lg">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Profile</h1>
+        <h1 className="text-2xl font-bold">{tabs[activeTab]}</h1>
         <button
           onClick={() => setEditMode(!editMode)}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -35,16 +81,43 @@ const stored = getFromStorage("profileData");
           {editMode ? "View Profile" : "Edit Profile"}
         </button>
       </div>
-
-      {editMode ? (
-        <ProfileForm  saveddata={savedData} onSubmit={onSubmit}/>
-      ) : savedData ? ( 
-        <ProfileDisplay data={savedData} />
-      ) : (
-        <p className="text-gray-500">
-          No profile data available. Please edit your profile.
-        </p>
+      {activeTab === 0 && (
+        editMode ? (
+          <ProfileForm personalSavedData={personalSavedData} onSubmit={handlePersonalDataSubmit} />
+        ) : personalSavedData ? (
+          <ProfileDisplay data={personalSavedData} />
+        ) : (
+          <p className="text-gray-500">
+            No data available. Please edit your profile.
+          </p>
+        )
       )}
+     {activeTab === 1 && (
+        editMode ? (
+          <AddressForm addressSavedData={addressSavedData} onSubmit={handleAddressDataSubmit} />
+        ) : addressSavedData ? (
+          <AddressDisplay data={addressSavedData} />
+        ) : (
+          <p className="text-gray-500">
+            No profile data available. Please edit your profile.
+          </p>
+        )
+      )}
+
+     {activeTab === 2 && (
+        editMode ? (
+          <JobForm jobSavedData={jobSavedData} onSubmit={handleJobDataSubmit} />
+        ) : jobSavedData ? (
+          <JobDisplay data={jobSavedData} />
+        ) : (
+          <p className="text-gray-500">
+            No data available. Please edit your profile.
+          </p>
+        )
+      )}
+   
+
     </div>
+     </div>
   );
 }

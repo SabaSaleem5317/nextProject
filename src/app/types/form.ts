@@ -1,16 +1,36 @@
 import * as z from "zod";
-export const formSchema = z.object({
+export const personalSchema = z.object({
   name: z.string().min(4, "Name is required"),
   email: z.string().email("Invalid email address"),
   phoneNumber: z.string().optional(),
   webUrl: z.string().url("Invalid URL"),
-  experience: z.coerce.number()
-    .min(0, "Experience must be a positive number")
-    .max(50, "Experience cannot exceed 50 years"),
   jobTitle: z.string().nonempty("Job title is required"),
-  dateofBirth:z.date(),
+  dateofBirth:z.coerce.date("date field required"),
   gender:z.string(),
 
 });
 
-export type FormData = z.infer<typeof formSchema>;
+export const addressSchema=z.object({
+  streetAddress:z.string().nonempty("Address is required"),
+  city:z.string().nonempty("City is required"),
+  state:z.string().nonempty("State is required"),
+  zipcode:z.string().length(5, "Zip code must be exactly 5 digits long."),
+  country:z.string().nonempty("Country is required"),
+  addressType:z.string(),
+
+});
+
+export const jobSchema=z.object({ 
+  jobTitle: z.string().nonempty("Job title is required"),
+  company:z.string().nonempty("Company name required"),
+   experience: z.coerce.number()
+    .min(0, "Experience must be a positive number")
+    .max(50, "Experience cannot exceed 50 years"),
+  industry:z.string(),
+
+});
+
+
+export type personalData = z.infer<typeof personalSchema>;
+export type addressData=z.infer<typeof addressSchema>;
+export type jobData=z.infer<typeof jobSchema>;

@@ -1,14 +1,20 @@
-import InputField from "./InputField";
+import InputField from "../Components/InputField";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm,Controller } from "react-hook-form";
-import { formSchema, FormData } from "../types/form";
+import { personalSchema ,personalData } from "../types/form";
 import { MenuItem } from "@mui/material";
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import FormHelperText from "@mui/material/FormHelperText";
 
 
 
 type ProfileFormProps = {
-  saveddata: FormData | null;
-  onSubmit: (data: FormData) => void;
+  personalSavedData: personalData | null;
+  onSubmit: (data: personalData) => void;
 };
 const jobOptions = [
   "Associate Software Engineer",
@@ -18,26 +24,26 @@ const jobOptions = [
   "Product Manager",
 ];
 
-export default function ProfileForm( { saveddata, onSubmit }: ProfileFormProps) {
+export default function ProfileForm( { personalSavedData, onSubmit }: ProfileFormProps) {
  const {
     control, 
     handleSubmit,
-  } = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  } = useForm<personalData>({
+    resolver: zodResolver(personalSchema),
     mode: "onTouched",
-    defaultValues:saveddata || {
+    defaultValues:personalSavedData || {
       name: "",
       email: "",
       phoneNumber: "",
       webUrl: "",
-      experience: 0,
-      jobTitle: "",
+      dateofBirth:new Date(),
+      gender:"",
     },
   });
 
 
  const createInputFieldProps= (
-  fieldName: keyof FormData,
+  fieldName: keyof personalData,
   props: {placeholder?: string; type?: string, label?:string,select?:boolean,
     children?: React.ReactNode} = {}
 ) => {
@@ -62,46 +68,34 @@ export default function ProfileForm( { saveddata, onSubmit }: ProfileFormProps) 
           <Controller
             {...createInputFieldProps("email", { placeholder: "Email", type: "email" })}
           />  
-        
           <Controller
            {...createInputFieldProps("phoneNumber", { placeholder: "Phone Number", type: "tel" })}
           />  
           <Controller
             {...createInputFieldProps("webUrl", { placeholder: "Website URL", type: "url" })}
           />  
-         <Controller
-            {...createInputFieldProps("experience", { placeholder: "Experience (years)", type: "number" })}
-         />
          <Controller 
          {...createInputFieldProps("dateofBirth",{placeholder:"Date of Birth",type:"date"})}
          />
           <Controller
-        name="myRadioChoice"
-        control={control}
-        render={({ field }) => (
-          <>
-            <label>
-              <input
-                type="radio"
-                value="Female"
-                {...field} 
-                checked={field.value === "choice1"} 
-              />
-              Female
-            </label>
-            <label>
-              <input
-                type="radio"
-                value="Male"
-                {...field}
-                checked={field.value === "choice2"}
-              />
-              Male
-            </label>
-          </>
-        )}
-      />
-         
+              name="gender"
+              control={control}
+              render={({ field, fieldState }) => (
+                <FormControl component="fieldset" error={!!fieldState.error}>
+                  <FormLabel component="legend">Gender</FormLabel>
+                  <RadioGroup row {...field}>
+                    <FormControlLabel value="Male" control={<Radio />} label="Male" />
+                    <FormControlLabel value="Female" control={<Radio />} label="Female" />
+                    <FormControlLabel value="Other" control={<Radio />} label="Other" />
+                  </RadioGroup>
+                  {fieldState.error && (
+                    <FormHelperText>{fieldState.error.message}</FormHelperText>
+                  )}
+                </FormControl>
+                )}
+            />
+
+        
          <Controller
            {...createInputFieldProps("jobTitle", {
               label: "Job Title",
