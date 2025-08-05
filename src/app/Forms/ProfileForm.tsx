@@ -1,6 +1,6 @@
 import InputField from "../Components/InputField";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm,Controller } from "react-hook-form";
+import { useForm,Controller, UseControllerReturn } from "react-hook-form";
 import { personalSchema ,personalData } from "../types/form";
 import { MenuItem } from "@mui/material";
 import Radio from '@mui/material/Radio';
@@ -10,6 +10,29 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import FormHelperText from "@mui/material/FormHelperText";
 
+
+
+
+
+import { Control } from "react-hook-form";
+
+export function useInputFieldProps<T extends Record<string, unknown>>(
+  fieldName: keyof T,
+  props: { placeholder?: string; type?: string; label?: string; select?: boolean; children?: React.ReactNode } = {},
+  control: Control<T>
+) {
+  return {
+    name: fieldName,
+    control,
+    render: ({ field, fieldState }: UseControllerReturn<T>) => (
+      <InputField
+        {...field}
+        {...props}
+        errorMessage={fieldState.error?.message}
+      />
+    ),
+  };
+}
 
 
 type ProfileFormProps = {
@@ -50,7 +73,7 @@ export default function ProfileForm( { personalSavedData, onSubmit }: ProfileFor
   return {
     name: fieldName,
     control,
-    render: ({ field, fieldState }:any) => (
+    render: ({ field, fieldState }:UseControllerReturn<personalData>) => (
       <InputField
         {...field}
         {...props}
@@ -63,19 +86,19 @@ export default function ProfileForm( { personalSavedData, onSubmit }: ProfileFor
   return(
   <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Controller
-            {...createInputFieldProps("name", { placeholder: "Name" })}
+            {...useInputFieldProps("name", { placeholder: "Name" }, control)}
           />
           <Controller
-            {...createInputFieldProps("email", { placeholder: "Email", type: "email" })}
+            {...useInputFieldProps("email", { placeholder: "Email", type: "email" },control)}
           />  
           <Controller
-           {...createInputFieldProps("phoneNumber", { placeholder: "Phone Number", type: "tel" })}
+           {...useInputFieldProps("phoneNumber", { placeholder: "Phone Number", type: "tel" }, control)}
           />  
           <Controller
-            {...createInputFieldProps("webUrl", { placeholder: "Website URL", type: "url" })}
+            {...useInputFieldProps("webUrl", { placeholder: "Website URL", type: "url" },control)}
           />  
          <Controller 
-         {...createInputFieldProps("dateofBirth",{placeholder:"Date of Birth",type:"date"})}
+         {...useInputFieldProps("dateofBirth",{placeholder:"Date of Birth",type:"date"},control)}
          />
           <Controller
               name="gender"
@@ -94,10 +117,9 @@ export default function ProfileForm( { personalSavedData, onSubmit }: ProfileFor
                 </FormControl>
                 )}
             />
-
         
          <Controller
-           {...createInputFieldProps("jobTitle", {
+           {...useInputFieldProps("jobTitle", {
               label: "Job Title",
               select: true,
               children: jobOptions.map((title) => (
@@ -105,7 +127,7 @@ export default function ProfileForm( { personalSavedData, onSubmit }: ProfileFor
                   {title}
                  </MenuItem>
                     )),
-              })}
+              }, control)}
             />
           <button
             type="submit"

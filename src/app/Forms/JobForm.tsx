@@ -1,10 +1,10 @@
-"use client";
-import InputField from "../Components/InputField";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm,Controller} from "react-hook-form";
 import { jobSchema, jobData } from "../types/form";
 import {TextField} from "@mui/material";
 import { Autocomplete } from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
+import useInputFieldProps from "../hooks/useInputFieldProps";
 
 type JobFormProps = {
   jobSavedData: jobData | null;
@@ -14,6 +14,8 @@ type JobFormProps = {
 
 export default function JobForm( { jobSavedData, onSubmit }: JobFormProps) {
 const industries=["Information Technology","Business","Marketing","Health Care","Engineering"]
+const skills=["JavaScript", "Python", "React", "Node.js"];
+
 
  const {
     control, 
@@ -26,41 +28,22 @@ const industries=["Information Technology","Business","Marketing","Health Care",
       company: "",
       experience: 0,
       industry:"",
+      skills : [''],
     },
   });
 
 
-
-
- const createInputFieldProps= (
-  fieldName: keyof jobData,
-  props: {placeholder?: string; type?: string, label?:string,select?:boolean,
-    children?: React.ReactNode} = {}
-) => {
-  return {
-    name: fieldName,
-    control,
-    render: ({ field, fieldState }:any) => (
-      <InputField
-        {...field}
-        {...props}
-        errorMessage={fieldState.error?.message}
-      />
-    ),
-  };
-};
-  
   return(
   <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Controller
-            {...createInputFieldProps("jobTitle", { placeholder: "Job Title" })}
+            {...useInputFieldProps("jobTitle", { placeholder: "Job Title" },control)}
           />
         <Controller
-            {...createInputFieldProps("company", { placeholder: "Company Name"})}
+            {...useInputFieldProps("company", { placeholder: "Company Name"},control)}
           />  
     
          <Controller
-            {...createInputFieldProps("experience", { placeholder: "Experience (years)", type: "number" })}
+            {...useInputFieldProps("experience", { placeholder: "Experience (years)", type: "number" },control)}
          />
       <Controller
         name="industry"
@@ -78,8 +61,35 @@ const industries=["Information Technology","Business","Marketing","Health Care",
               />
             )}
           />
-        )}
+        )} 
       />
+      <Controller
+        name="skills"
+        control={control}
+        render={({ field, fieldState }) => (
+          <Autocomplete
+            multiple
+            options={skills}
+            value={field.value || []}
+            onChange={(_, value) => field.onChange(value)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Skills"
+                helperText={fieldState.error?.message}
+              />
+            )}
+            renderOption={(props, option, { selected }) => (
+              <li {...props} key={option}>
+                <Checkbox checked={selected} key={`checkbox-${option}`} />
+                {option}
+              </li>
+            )}
+          />
+        )} 
+
+
+        />
           <div>
           <button
             type="submit"

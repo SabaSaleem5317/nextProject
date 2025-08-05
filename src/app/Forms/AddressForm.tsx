@@ -1,5 +1,3 @@
-"use client";
-import InputField from "../Components/InputField";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm,Controller} from "react-hook-form";
 import { addressSchema, addressData } from "../types/form";
@@ -12,6 +10,7 @@ import FormLabel from '@mui/material/FormLabel';
 import FormHelperText from "@mui/material/FormHelperText";
 import { Autocomplete } from "@mui/material";
 import { Country, State, City }  from 'country-state-city';
+import useInputFieldProps from "../hooks/useInputFieldProps";
 
 type AddressFormProps = {
   addressSavedData: addressData | null;
@@ -42,32 +41,14 @@ const countries=new Set(Country.getAllCountries().map(item=>item.name));
     },
   });
 
-
- const createInputFieldProps= (
-  fieldName: keyof addressData,
-  props: {placeholder?: string; type?: string, label?:string,select?:boolean,
-    children?: React.ReactNode} = {}
-) => {
-  return {
-    name: fieldName,
-    control,
-    render: ({ field, fieldState }:any) => (
-      <InputField
-        {...field}
-        {...props}
-        errorMessage={fieldState.error?.message}
-      />
-    ),
-  };
-};
   
   return(
   <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Controller
-            {...createInputFieldProps("streetAddress", { placeholder: "Street Address" })}
+            {...useInputFieldProps("streetAddress", { placeholder: "Street Address" },control)}
           />
         <Controller
-            {...createInputFieldProps("zipcode", { placeholder: "Zip Code"})}
+            {...useInputFieldProps("zipcode", { placeholder: "Zip Code"},control)}
           />  
         <Controller
         name="city"

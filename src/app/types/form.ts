@@ -5,7 +5,7 @@ export const personalSchema = z.object({
   phoneNumber: z.string().optional(),
   webUrl: z.string().url("Invalid URL"),
   jobTitle: z.string().nonempty("Job title is required"),
-  dateofBirth:z.coerce.date("date field required"),
+  dateofBirth:z.coerce.date<Date>("date field required"),
   gender:z.string(),
 
 });
@@ -23,11 +23,11 @@ export const addressSchema=z.object({
 export const jobSchema=z.object({ 
   jobTitle: z.string().nonempty("Job title is required"),
   company:z.string().nonempty("Company name required"),
-   experience: z.coerce.number()
+   experience: z.coerce.number<number>()
     .min(0, "Experience must be a positive number")
     .max(50, "Experience cannot exceed 50 years"),
   industry:z.string(),
-
+  skills: z.array(z.string()).min(1, "At least one skill is required"),
 });
 
 

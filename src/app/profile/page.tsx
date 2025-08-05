@@ -9,6 +9,7 @@ import AddressForm from "../Forms/AddressForm";
 import {personalData ,addressData, jobData} from "../types/form";
 import { saveToStorage, getFromStorage } from '../../utility/storage';
 import JobForm from "../Forms/JobForm";
+import Tabs from "../Components/tabs";
 
 export default function ProfilePage() {
 const [editMode, setEditMode] = useState(false);
@@ -59,17 +60,7 @@ if (jobStored) {
 
   return (
     <div>
-       <div className="flex mx-180 mt-5 items-center mb-6 ">
-       {tabs.map((tab, index) => ( 
-        <button
-          key={index} 
-          className="px-4 py-const [addressSavedData,setaddressSavedData]=useState<addressData | null>(null)2 bg-gray-300 text-black hover:bg-gray-500 border-1"
-          onClick={() => handleTabClick(index)}
-        >
-          {tab}
-        </button>
-      ))}
-       </div>
+      <Tabs activeTab={activeTab} onTabClick={handleTabClick} tabs={tabs} />
     
     <div className="p-6 my-10 mx-auto max-w-xl border-2 border-gray-300 rounded-lg shadow-lg">
       <div className="flex justify-between items-center mb-6">
