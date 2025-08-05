@@ -5,7 +5,7 @@ type InputFieldProps = TextFieldProps & {
   errorMessage?: string;
 };
 const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
-  ({ errorMessage, children, ...props }, ref) => {
+  ({ errorMessage = '', children, ...props }, ref) => {
     return (
       <div className="mb-4">
         <TextField
@@ -22,5 +22,6 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
     );
   }
 );
+
 InputField.displayName = 'InputField';
 export default InputField;
