@@ -5,7 +5,7 @@ type TextDisplayProps = {
 };
 export default function TextDisplay({ label, value }: TextDisplayProps) {
    const displayValue = value instanceof Date ? value.toLocaleDateString() : value ?? "N/A";
-   console.log(displayValue)
+  
 
   return (
     <p>

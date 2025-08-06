@@ -13,9 +13,9 @@ import Tabs from "../Components/tabs";
 
 export default function ProfilePage() {
 const [editMode, setEditMode] = useState(false);
-const [personalSavedData, setpersonalSavedData] = useState<personalData | null>(null);
-const [addressSavedData,setaddressSavedData]=useState<addressData | null>(null)
-const [jobSavedData,setjobSavedData]=useState<jobData | null>(null)
+const [personalSavedData, setPersonalSavedData] = useState<personalData | null>(null);
+const [addressSavedData,setAddressSavedData]=useState<addressData | null>(null)
+const [jobSavedData,setJobSavedData]=useState<jobData | null>(null)
 const tabs=["Personal Details","Address Details","Job Details"];
 const [activeTab,setactiveTab]=useState(0);
 
@@ -25,31 +25,33 @@ useEffect(() => {
 const personalDatastored = getFromStorage("profileData");
 const addressStored = getFromStorage("addressData");
 const jobStored = getFromStorage("jobData");
-if (personalDatastored) {
-    setpersonalSavedData(personalDatastored);
-  }
+if (personalDatastored && personalDatastored.dateofBirth) {
+  personalDatastored.dateofBirth = new Date(personalDatastored.dateofBirth).toLocaleDateString();
+  setPersonalSavedData(personalDatastored)
+}
+
 if (addressStored) {
-    setaddressSavedData(addressStored);
+    setAddressSavedData(addressStored);
   }
 if (jobStored) {
-    setjobSavedData(jobStored);
+    setJobSavedData(jobStored);
   }
 }, []);
 
  
   const handlePersonalDataSubmit = (data: personalData) => {
-    setpersonalSavedData(data);
+    setPersonalSavedData(data);
     saveToStorage("profileData", data);
     setEditMode(false);
   };
     const handleAddressDataSubmit = (data: addressData) => {
-    setaddressSavedData(data);
+    setAddressSavedData(data);
     saveToStorage("addressData", data);
     setEditMode(false);
   };
    
    const handleJobDataSubmit=(data:jobData)=>{
-    setjobSavedData(data);
+    setJobSavedData(data);
     saveToStorage("jobData", data);
     setEditMode(false);
    }
@@ -93,7 +95,7 @@ if (jobStored) {
             No profile data available. Please edit your profile.
           </p>
         )
-      )}
+      )} 
 
      {activeTab === 2 && (
         editMode ? (

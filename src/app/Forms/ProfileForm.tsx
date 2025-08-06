@@ -1,6 +1,5 @@
-import InputField from "../Components/InputField";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm,Controller, UseControllerReturn } from "react-hook-form";
+import { useForm,Controller} from "react-hook-form";
 import { personalSchema ,personalData } from "../types/form";
 import { MenuItem } from "@mui/material";
 import Radio from '@mui/material/Radio';
@@ -9,30 +8,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import FormHelperText from "@mui/material/FormHelperText";
-
-
-
-
-
-import { Control } from "react-hook-form";
-
-export function useInputFieldProps<T extends Record<string, unknown>>(
-  fieldName: keyof T,
-  props: { placeholder?: string; type?: string; label?: string; select?: boolean; children?: React.ReactNode } = {},
-  control: Control<T>
-) {
-  return {
-    name: fieldName,
-    control,
-    render: ({ field, fieldState }: UseControllerReturn<T>) => (
-      <InputField
-        {...field}
-        {...props}
-        errorMessage={fieldState.error?.message}
-      />
-    ),
-  };
-}
+import useInputFieldProps from "../hooks/useInputFieldProps";
 
 
 type ProfileFormProps = {
@@ -63,25 +39,6 @@ export default function ProfileForm( { personalSavedData, onSubmit }: ProfileFor
       gender:"",
     },
   });
-
-
- const createInputFieldProps= (
-  fieldName: keyof personalData,
-  props: {placeholder?: string; type?: string, label?:string,select?:boolean,
-    children?: React.ReactNode} = {}
-) => {
-  return {
-    name: fieldName,
-    control,
-    render: ({ field, fieldState }:UseControllerReturn<personalData>) => (
-      <InputField
-        {...field}
-        {...props}
-        errorMessage={fieldState.error?.message}
-      />
-    ),
-  };
-};
   
   return(
   <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -117,7 +74,6 @@ export default function ProfileForm( { personalSavedData, onSubmit }: ProfileFor
                 </FormControl>
                 )}
             />
-        
          <Controller
            {...useInputFieldProps("jobTitle", {
               label: "Job Title",

@@ -81,7 +81,7 @@ const skills=["JavaScript", "Python", "React", "Node.js"];
             )}
             renderOption={(props, option, { selected }) => (
               <li {...props} key={option}>
-                <Checkbox checked={selected} key={`checkbox-${option}`} />
+                <Checkbox checked={selected} key={option} />
                 {option}
               </li>
             )}

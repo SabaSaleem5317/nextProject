@@ -27,7 +27,6 @@ const countries=new Set(Country.getAllCountries().map(item=>item.name));
  const {
     control, 
     handleSubmit,
-    formState:errors,
   } = useForm<addressData>({
     resolver: zodResolver(addressSchema),
     mode: "onTouched",
@@ -62,7 +61,7 @@ const countries=new Set(Country.getAllCountries().map(item=>item.name));
               <TextField
                 {...params}
                 label="City"
-                error={!!errors}
+                error={!!fieldState.error}
                 helperText={fieldState.error?.message}
               />
             )}
@@ -82,7 +81,7 @@ const countries=new Set(Country.getAllCountries().map(item=>item.name));
               <TextField
                 {...params}
                 label="State/Province"
-                error={!!errors}
+                error={!!fieldState.error}
                 helperText={fieldState.error?.message}
               />
             )}
@@ -102,7 +101,7 @@ const countries=new Set(Country.getAllCountries().map(item=>item.name));
               <TextField
                 {...params}
                 label="Country"
-                error={!!errors}
+               error={!!fieldState.error}
                 helperText={fieldState.error?.message}
               />
             )}
