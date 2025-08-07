@@ -1,11 +1,9 @@
-
 type TextDisplayProps = {
   label: string;
   value: string | number | undefined | Date;
 };
 export default function TextDisplay({ label, value }: TextDisplayProps) {
-   const displayValue = value instanceof Date ? value.toLocaleDateString() : value ?? "N/A";
-  
+  const displayValue = value instanceof Date ? value.toLocaleDateString() : (value ?? 'N/A');
 
   return (
     <p>
@@ -13,4 +11,3 @@ export default function TextDisplay({ label, value }: TextDisplayProps) {
     </p>
   );
 }
-

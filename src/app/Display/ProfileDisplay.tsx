@@ -1,5 +1,5 @@
-import TextDisplay from "../Components/TextDisplay";
-import { personalData } from "../types/form";
+import TextDisplay from '../Components/TextDisplay';
+import { personalData } from '../types/form';
 
 export default function ProfileDisplay({ data }: { data: personalData }) {
   return (
@@ -9,8 +9,8 @@ export default function ProfileDisplay({ data }: { data: personalData }) {
       <TextDisplay label="Phone Number" value={data.phoneNumber} />
       <TextDisplay label="Website URL" value={data.webUrl} />
       <TextDisplay label="Job Title" value={data.jobTitle} />
-     <TextDisplay label="Date of Birth" value={data.dateofBirth}/>
-     <TextDisplay label="Gender" value={data.gender}/>
+      <TextDisplay label="Date of Birth" value={data.dateofBirth} />
+      <TextDisplay label="Gender" value={data.gender} />
     </div>
   );
 }
