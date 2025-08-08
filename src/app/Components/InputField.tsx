@@ -11,11 +11,12 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
         ? (() => {
             if (value instanceof Date) {
               return value.toISOString().split('T')[0];
-            } else if (typeof value === 'string') {
-              return value;
-            } else {
-              return '';
             }
+            if (typeof value === 'string') {
+              const date = new Date(value);
+              return date.toISOString().split('T')[0];
+            }
+            return '';
           })()
         : (value ?? '');
     return (

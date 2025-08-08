@@ -1,5 +1,5 @@
-import TextDisplay from "../Components/TextDisplay";
-import { addressData } from "../types/form";
+import TextDisplay from '../Components/TextDisplay';
+import { addressData } from '../types/form';
 
 export default function AddressDisplay({ data }: { data: addressData }) {
   return (
@@ -10,8 +10,6 @@ export default function AddressDisplay({ data }: { data: addressData }) {
       <TextDisplay label="Zip Code" value={data.zipcode} />
       <TextDisplay label="Country" value={data.country} />
       <TextDisplay label="Address Type" value={data.addressType} />
-
     </div>
   );
 }
-

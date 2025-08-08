@@ -1,8 +1,9 @@
 import * as z from 'zod';
+
 export const personalSchema = z.object({
   name: z.string().min(4, 'Name is required'),
   email: z.string().email('Invalid email address'),
-  phoneNumber: z.string().optional(),
+  phoneNumber: z.string().regex(/\+92\d{10}/, 'Phone number must be in +92XXXXXXXXXX format'),
   webUrl: z.string().url('Invalid URL'),
   jobTitle: z.string().nonempty('Job title is required'),
   dateofBirth: z.coerce.date<Date>('date field required'),
