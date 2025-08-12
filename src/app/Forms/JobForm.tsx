@@ -1,14 +1,13 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, Controller } from 'react-hook-form';
+import { Controller, Control } from 'react-hook-form';
 import { TextField, Autocomplete, MenuItem } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import useInputFieldProps from '../hooks/useInputFieldProps';
-import { jobSchema, jobData } from '../types/form';
+import { FormData } from '../types/form';
 
-type JobFormProps = {
-  jobSavedData: jobData | null;
-  onSubmit: (data: jobData) => void;
-};
+interface JobFormProps {
+  onSubmit: () => void;
+  control: Control<FormData>;
+}
 
 const jobOptions = [
   'Associate Software Engineer',
@@ -17,33 +16,20 @@ const jobOptions = [
   'Solutions Architect',
   'Product Manager',
 ];
+const industries = [
+  'Information Technology',
+  'Business',
+  'Marketing',
+  'Health Care',
+  'Engineering',
+];
+const skills = ['JavaScript', 'Python', 'React', 'Node.js'];
 
-export default function JobForm({ jobSavedData, onSubmit }: JobFormProps) {
-  const industries = [
-    'Information Technology',
-    'Business',
-    'Marketing',
-    'Health Care',
-    'Engineering',
-  ];
-  const skills = ['JavaScript', 'Python', 'React', 'Node.js'];
-
-  const { control, handleSubmit } = useForm<jobData>({
-    resolver: zodResolver(jobSchema),
-    mode: 'onTouched',
-    defaultValues: jobSavedData || {
-      jobTitle: '',
-      company: '',
-      experience: 0,
-      industry: '',
-      skills: [''],
-    },
-  });
-
+export default function JobForm({ onSubmit, control }: JobFormProps) {
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={onSubmit} className="space-y-4">
       <Controller
-        {...useInputFieldProps('jobTitle', control, {
+        {...useInputFieldProps('job.jobTitle', control, {
           label: 'Job Title',
           select: true,
           children: jobOptions.map((title) => (
@@ -53,16 +39,16 @@ export default function JobForm({ jobSavedData, onSubmit }: JobFormProps) {
           )),
         })}
       />
-      <Controller {...useInputFieldProps('company', control)} />
+      <Controller {...useInputFieldProps('job.company', control, { placeholder: 'Company' })} />
 
       <Controller
-        {...useInputFieldProps('experience', control, {
+        {...useInputFieldProps('job.experience', control, {
           placeholder: 'Experience (years)',
           type: 'number',
         })}
       />
       <Controller
-        name="industry"
+        name="job.industry"
         control={control}
         render={({ field, fieldState }) => (
           <Autocomplete
@@ -76,7 +62,7 @@ export default function JobForm({ jobSavedData, onSubmit }: JobFormProps) {
         )}
       />
       <Controller
-        name="skills"
+        name="job.skills"
         control={control}
         render={({ field, fieldState }) => (
           <Autocomplete
@@ -99,7 +85,7 @@ export default function JobForm({ jobSavedData, onSubmit }: JobFormProps) {
       <div>
         <button
           type="submit"
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          className="px-4 py-2 mt-2 bg-green-600 text-white rounded hover:bg-green-700"
         >
           Save
         </button>

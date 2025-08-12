@@ -1,8 +1,8 @@
-import { Control, UseControllerReturn } from 'react-hook-form';
+import { Control, FieldPath, UseControllerReturn } from 'react-hook-form';
 import InputField from '../Components/InputField';
 
 export default function useInputFieldProps<T extends Record<string, unknown>>(
-  fieldName: keyof T,
+  fieldName: FieldPath<T>,
   control: Control<T>,
   props: {
     placeholder?: string;

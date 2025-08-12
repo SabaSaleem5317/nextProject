@@ -1,5 +1,4 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, Controller } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 import { TextField, Autocomplete } from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -8,40 +7,29 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import { Country, State, City } from 'country-state-city';
-import { addressSchema, addressData } from '../types/form';
+import { FormData } from '../types/form';
 import useInputFieldProps from '../hooks/useInputFieldProps';
 
-type AddressFormProps = {
-  addressSavedData: addressData | null;
-  onSubmit: (data: addressData) => void;
-};
+interface AddressFormProps {
+  onSubmit: () => void;
+  control: Control<FormData>;
+}
 
-export default function AddressForm({ addressSavedData, onSubmit }: AddressFormProps) {
-  const cities = new Set(City.getAllCities().map((item) => item.name));
-  const states = new Set(State.getAllStates().map((item) => item.name));
-  const countries = new Set(Country.getAllCountries().map((item) => item.name));
+const cities = new Set(City.getAllCities().map((item) => item.name));
+const states = new Set(State.getAllStates().map((item) => item.name));
+const countries = new Set(Country.getAllCountries().map((item) => item.name));
 
-  const { control, handleSubmit } = useForm<addressData>({
-    resolver: zodResolver(addressSchema),
-    mode: 'onTouched',
-    defaultValues: addressSavedData || {
-      streetAddress: '',
-      city: '',
-      state: '',
-      zipcode: '',
-      country: '',
-      addressType: '',
-    },
-  });
-
+export default function AddressForm({ onSubmit, control }: AddressFormProps) {
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={onSubmit} className="space-y-4">
       <Controller
-        {...useInputFieldProps('streetAddress', control, { placeholder: 'Street Address' })}
+        {...useInputFieldProps('address.streetAddress', control, { placeholder: 'Street Address' })}
       />
-      <Controller {...useInputFieldProps('zipcode', control, { placeholder: 'Zip Code' })} />
       <Controller
-        name="city"
+        {...useInputFieldProps('address.zipcode', control, { placeholder: 'Zip Code' })}
+      />
+      <Controller
+        name="address.city"
         control={control}
         render={({ field, fieldState }) => (
           <Autocomplete
@@ -61,7 +49,7 @@ export default function AddressForm({ addressSavedData, onSubmit }: AddressFormP
       />
 
       <Controller
-        name="state"
+        name="address.state"
         control={control}
         render={({ field, fieldState }) => (
           <Autocomplete
@@ -81,7 +69,7 @@ export default function AddressForm({ addressSavedData, onSubmit }: AddressFormP
       />
 
       <Controller
-        name="country"
+        name="address.country"
         control={control}
         render={({ field, fieldState }) => (
           <Autocomplete
@@ -100,7 +88,7 @@ export default function AddressForm({ addressSavedData, onSubmit }: AddressFormP
         )}
       />
       <Controller
-        name="addressType"
+        name="address.addressType"
         control={control}
         render={({ field, fieldState }) => (
           <FormControl component="fieldset" error={!!fieldState.error}>
@@ -117,7 +105,7 @@ export default function AddressForm({ addressSavedData, onSubmit }: AddressFormP
       <div>
         <button
           type="submit"
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          className="px-4 py-2 mt-2 bg-green-600 text-white rounded hover:bg-green-700"
         >
           Save
         </button>

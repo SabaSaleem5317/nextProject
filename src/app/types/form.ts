@@ -3,9 +3,11 @@ import * as z from 'zod';
 export const personalSchema = z.object({
   name: z.string().min(4, 'Name is required'),
   email: z.string().email('Invalid email address'),
-  phoneNumber: z.string().regex(/\+92\d{10}/, 'Phone number must be in +92XXXXXXXXXX format'),
+  phoneNumber: z
+    .string()
+    .regex(/\+92\d{10}/, 'Phone number must be in +92XXXXXXXXXX format')
+    .optional(),
   webUrl: z.string().url('Invalid URL'),
-  jobTitle: z.string().nonempty('Job title is required'),
   dateofBirth: z.coerce.date<Date>('date field required'),
   gender: z.string(),
 });
@@ -29,7 +31,9 @@ export const jobSchema = z.object({
   industry: z.string(),
   skills: z.array(z.string()).min(1, 'At least one skill is required'),
 });
-
-export type personalData = z.infer<typeof personalSchema>;
-export type addressData = z.infer<typeof addressSchema>;
-export type jobData = z.infer<typeof jobSchema>;
+export const formSchemas = z.object({
+  personal: personalSchema,
+  address: addressSchema,
+  job: jobSchema,
+});
+export type FormData = z.infer<typeof formSchemas>;
