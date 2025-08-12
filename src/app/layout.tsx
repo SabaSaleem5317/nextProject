@@ -3,13 +3,8 @@ import './globals.css';
 import localFont from 'next/font/local';
 
 const geistSans = localFont({
-  src: './fonts/Geist-Regular.woff2',
+  src: '../fonts/Geist-Regular.ttf',
   variable: '--font-geist-sans',
-});
-
-const geistMono = localFont({
-  src: './fonts/GeistMono-Regular.woff2',
-  variable: '--font-geist-mono',
 });
 
 export const metadata: Metadata = {
@@ -24,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+      <body className={`${geistSans.variable} antialiased`}>{children}</body>
     </html>
   );
 }
