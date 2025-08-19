@@ -1,11 +1,13 @@
-type TextfieldProps = {
+type TextDisplayProps = {
   label: string;
-  value: string | number | undefined;
+  value: string | number | undefined | Date;
 };
-export default function Textfield({ label, value }: TextfieldProps) {
+export default function TextDisplay({ label, value }: TextDisplayProps) {
+  const displayValue = value instanceof Date ? value.toLocaleDateString() : (value ?? 'N/A');
+
   return (
     <p>
-      <strong>{label}:</strong> {value ?? 'N/A'}
+      <strong>{label}:</strong> {displayValue}
     </p>
   );
 }
