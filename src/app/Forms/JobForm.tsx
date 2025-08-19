@@ -5,7 +5,6 @@ import useInputFieldProps from '../hooks/useInputFieldProps';
 import { FormData } from '../types/form';
 
 interface JobFormProps {
-  onSubmit: () => void;
   control: Control<FormData>;
 }
 
@@ -25,9 +24,9 @@ const industries = [
 ];
 const skills = ['JavaScript', 'Python', 'React', 'Node.js'];
 
-export default function JobForm({ onSubmit, control }: JobFormProps) {
+export default function JobForm({ control }: JobFormProps) {
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <div>
       <Controller
         {...useInputFieldProps('job.jobTitle', control, {
           label: 'Job Title',
@@ -82,14 +81,6 @@ export default function JobForm({ onSubmit, control }: JobFormProps) {
           />
         )}
       />
-      <div>
-        <button
-          type="submit"
-          className="px-4 py-2 mt-2 bg-green-600 text-white rounded hover:bg-green-700"
-        >
-          Save
-        </button>
-      </div>
-    </form>
+    </div>
   );
 }

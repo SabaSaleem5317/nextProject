@@ -1,7 +1,7 @@
 import TextDisplay from '../Components/TextDisplay';
-import { jobData } from '../types/form';
+import { FormData } from '../types/form';
 
-export default function JobDisplay({ data }: { data: jobData }) {
+export default function JobDisplay({ data }: { data: FormData['job'] }) {
   return (
     <div className="space-y-2">
       <TextDisplay label="Job Title" value={data.jobTitle} />

@@ -31,6 +31,7 @@ export const jobSchema = z.object({
   industry: z.string(),
   skills: z.array(z.string()).min(1, 'At least one skill is required'),
 });
+
 export const formSchemas = z.object({
   personal: personalSchema,
   address: addressSchema,

@@ -9,13 +9,12 @@ import { FormData } from '../types/form';
 import useInputFieldProps from '../hooks/useInputFieldProps';
 
 interface ProfileFormProps {
-  onSubmit: () => void;
   control: Control<FormData>;
 }
 
-export default function ProfileForm({ onSubmit, control }: ProfileFormProps) {
+export default function ProfileForm({ control }: ProfileFormProps) {
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <div>
       <Controller {...useInputFieldProps('personal.name', control, { placeholder: 'Name' })} />
       <Controller
         {...useInputFieldProps('personal.email', control, { placeholder: 'Email', type: 'email' })}
@@ -53,14 +52,6 @@ export default function ProfileForm({ onSubmit, control }: ProfileFormProps) {
           </FormControl>
         )}
       />
-      <div>
-        <button
-          type="submit"
-          className="px-4 py-2 mt-2 bg-green-600 text-white rounded hover:bg-green-700"
-        >
-          Save
-        </button>
-      </div>
-    </form>
+    </div>
   );
 }

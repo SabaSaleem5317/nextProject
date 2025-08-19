@@ -1,21 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import ParentForm from '../ParentForm/page';
 import ProfileDisplay from '../Display/ProfileDisplay';
 import AddressDisplay from '../Display/AddressDisplay';
 import JobDisplay from '../Display/JobDisplay';
-import ProfileForm from '../Forms/ProfileForm';
-import AddressForm from '../Forms/AddressForm';
-import JobForm from '../Forms/JobForm';
-import { FormData, formSchemas } from '../types/form';
-import { saveToStorage, getFromStorage } from '../../utility/storage';
 import Tabs from '../Components/Tabs';
-
-type Nullable<T> = { [K in keyof T]: T[K] | null };
+import { saveToStorage, getFromStorage } from '../../utility/storage';
+import type { FormData } from '../types/form';
 
 const tabs = ['Personal Details', 'Address Details', 'Job Details'];
+
 const defaultFormValues: FormData = {
   personal: {
     name: '',
@@ -41,96 +36,32 @@ const defaultFormValues: FormData = {
     skills: [],
   },
 };
+
 export default function ProfilePage() {
   const [editMode, setEditMode] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-  const [savedData, setSavedData] = useState<Nullable<FormData>>({
-    personal: null,
-    address: null,
-    job: null,
-  });
-
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchemas),
-    mode: 'onTouched',
-    defaultValues: {
-      personal: savedData?.personal || defaultFormValues.personal,
-      address: savedData?.address || defaultFormValues.address,
-      job: savedData?.job || defaultFormValues.job,
-    },
-  });
-
-  const handleSavedData = () => {
-    const personalStored = getFromStorage('profileData');
-    const addressStored = getFromStorage('addressData');
-    const jobStored = getFromStorage('jobData');
-
-    const personalData = personalStored
-      ? {
-          ...personalStored,
-          dateofBirth: personalStored.dateofBirth
-            ? new Date(personalStored.dateofBirth)
-            : new Date(),
-        }
-      : defaultFormValues.personal;
-
-    const addressData = addressStored || defaultFormValues.address;
-
-    const jobData = jobStored || defaultFormValues;
-
-    setSavedData({
-      personal: personalStored
-        ? { ...personalStored, dateofBirth: personalData.dateofBirth }
-        : null,
-      address: addressStored || null,
-      job: jobStored || null,
-    });
-    form.reset({
-      personal: personalData,
-      address: addressData,
-      job: jobData,
-    });
-  };
+  const [savedData, setSavedData] = useState<FormData>(defaultFormValues);
+  const [hasUserData, setHasUserData] = useState(false);
 
   useEffect(() => {
-    handleSavedData();
-  }, [form]);
+    const stored = getFromStorage('Form Data') as FormData | null;
+    if (stored) {
+      setSavedData(stored);
+      setHasUserData(true);
+    }
+  }, []);
 
-  const handleTabClick = (i: number) => {
-    setActiveTab(i);
-  };
-  const handlePersonalData = (data: FormData) => {
-    const { personal } = data;
-    setSavedData((prev) => ({
-      ...prev,
-      personal,
-    }));
+  const handleSave = (tab: keyof FormData, tabData: unknown) => {
+    const updated = { ...savedData, [tab]: tabData };
+    setSavedData(updated);
+    saveToStorage('Form Data', updated);
+    setHasUserData(true);
     setEditMode(false);
-    saveToStorage('profileData', personal);
-  };
-
-  const handleAddressData = (data: FormData) => {
-    const { address } = data;
-    setSavedData((prev) => ({
-      ...prev,
-      address,
-    }));
-    setEditMode(false);
-    saveToStorage('addressData', address);
   };
 
-  const handleJobData = (data: FormData) => {
-    const { job } = data;
-    setSavedData((prev) => ({
-      ...prev,
-      job,
-    }));
-    setEditMode(false);
-    saveToStorage('jobData', job);
-  };
   return (
     <div>
-      <Tabs activeTab={activeTab} onTabClick={handleTabClick} tabs={tabs} />
+      <Tabs activeTab={activeTab} onTabClick={setActiveTab} tabs={tabs} />
 
       <div className="p-6 my-10 mx-auto max-w-xl border-2 border-gray-300 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
@@ -143,31 +74,33 @@ export default function ProfilePage() {
             {editMode ? 'View Profile' : 'Edit Profile'}
           </button>
         </div>
-        {activeTab === 0 &&
-          (editMode ? (
-            <ProfileForm onSubmit={form.handleSubmit(handlePersonalData)} control={form.control} />
-          ) : savedData.personal ? (
+
+        {editMode ? (
+          <ParentForm
+            activeTab={activeTab}
+            savedData={savedData}
+            onSubmit={handleSave}
+            setActiveTab={setActiveTab}
+          />
+        ) : activeTab === 0 ? (
+          hasUserData ? (
             <ProfileDisplay data={savedData.personal} />
           ) : (
             <p className="text-gray-500">No data available. Please edit your profile.</p>
-          ))}
-        {activeTab === 1 &&
-          (editMode ? (
-            <AddressForm onSubmit={form.handleSubmit(handleAddressData)} control={form.control} />
-          ) : savedData.address ? (
+          )
+        ) : activeTab === 1 ? (
+          hasUserData ? (
             <AddressDisplay data={savedData.address} />
           ) : (
-            <p className="text-gray-500">No profile data available. Please edit your profile.</p>
-          ))}
-
-        {activeTab === 2 &&
-          (editMode ? (
-            <JobForm onSubmit={form.handleSubmit(handleJobData)} control={form.control} />
-          ) : savedData.job ? (
+            <p className="text-gray-500">No data available. Please edit your profile.</p>
+          )
+        ) : activeTab === 2 ? (
+          hasUserData ? (
             <JobDisplay data={savedData.job} />
           ) : (
             <p className="text-gray-500">No data available. Please edit your profile.</p>
-          ))}
+          )
+        ) : null}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import TextDisplay from '../Components/TextDisplay';
-import { addressData } from '../types/form';
+import { FormData } from '../types/form';
 
-export default function AddressDisplay({ data }: { data: addressData }) {
+export default function AddressDisplay({ data }: { data: FormData['address'] }) {
   return (
     <div className="space-y-2">
       <TextDisplay label="Street Address" value={data.streetAddress} />
